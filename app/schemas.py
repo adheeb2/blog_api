@@ -1,27 +1,23 @@
+from sqlalchemy import VARCHAR
+from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional
 
-class GreetingBase(BaseModel):
-    message: str
+#Post
 
-class GreetingCreate(GreetingBase):
-    pass
-class Greeting(GreetingBase):
+class PostCreate(BaseModel):
+    title: str
+    content: str
+
+class PostResponse(BaseModel):
     id : int
+    title : str
+    content: str
+    views : int
+    status : str
+    created_at : datetime
+    updated_at : Optional[datetime] 
 
-#User
-class UserBase(BaseModel):
-    username: str
-    email: str
-
-class UserCreate(UserBase):
-    password : str
-
-class UserUpdate(UserBase):
-    is_active = Optional[bool] = None
-
-class UserInDB(UserBase):
-    id : int 
-    is_active: bool
-
-
+class PostUpdate(PostCreate):
+    status : str
+    views : int
