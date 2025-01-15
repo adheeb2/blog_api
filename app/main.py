@@ -2,13 +2,14 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from .import models, schemas
+from .routers import users
 from .database import SessionLocal, engine, Base, get_db
 
 
 app = FastAPI()
-get_db()
+
+app.include_router(users.router)
 
 @app.get("/")
-def hello(db: Session = Depends(get_db)):
-    print(db.is_active)
+def hello():
     return {"message" : "hello world"}
