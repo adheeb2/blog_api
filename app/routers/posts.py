@@ -18,7 +18,7 @@ def get_all_posts(db: Session = Depends(get_db)):
     return posts
 
 # #Get a specified blog post
-@router.get("/{post_id}/", response_model=PostResponse)
+@router.get("/{post_id}", response_model=PostResponse)
 def get_post(post_id : int, db: Session = Depends(get_db)):
     post = db.query(Post).filter(Post.id == post_id).first()
     if not post:
@@ -46,7 +46,7 @@ def create_post(post: PostCreate,db:Session = Depends(get_db)):
     
 
 #Update a blog post
-@router.put("/{post_id}/", response_model=PostResponse)
+@router.put("/{post_id}", response_model=PostResponse)
 def update_post(post_id : int, updated_post: PostUpdate, db:Session = Depends(get_db)):
     post = db.query(Post).filter(Post.id == post_id).first()
     if not post:
@@ -62,7 +62,7 @@ def update_post(post_id : int, updated_post: PostUpdate, db:Session = Depends(ge
     return post
 
 #Delete a blog post
-@router.delete("/{post_id}/",)
+@router.delete("/{post_id}",)
 def delete_post(post_id : int, db:Session = Depends(get_db)):
     post = db.query(Post).filter(Post.id == post_id).first()
     if not post:

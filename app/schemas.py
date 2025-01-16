@@ -8,6 +8,7 @@ from typing import Optional
 class PostCreate(BaseModel):
     title: str
     content: str
+    status : str
 
 class PostResponse(BaseModel):
     id : int
