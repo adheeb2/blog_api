@@ -22,3 +22,23 @@ class PostResponse(BaseModel):
 class PostUpdate(PostCreate):
     status : str
     views : int
+
+#User
+
+class UserCreate(BaseModel):
+    username : str
+    email : str
+    password : str
+
+class UserResponse(BaseModel):
+    id : int
+    username : str
+    email : str
+    role : str
+    created_at : datetime
+    updated_at : Optional[datetime]
+
+class UserUpdate(BaseModel):
+    username: str
+    role : str
+
