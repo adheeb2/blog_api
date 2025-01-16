@@ -2,14 +2,12 @@ from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Table, VAR
 from sqlalchemy.sql import func
 from .database import Base
 from sqlalchemy.orm import relationship
+from enum import Enum as PyEnum
 
-# class Greetings(Base):
-#     __tablename__ = 'greetings'
-
-#     id = Column(Integer, primary_key=True, index=True)
-#     message = Column(String)
-
-
+class Role(PyEnum):
+    ADMIN = "Admin"
+    EDITOR = "Editor"
+    READER = "Reader"
 
 class User(Base):
 
@@ -74,3 +72,14 @@ class Connection(Base):
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False) 
     is_like = Column(Boolean, nullable=False)
     created_at = Column(DateTime(timezone=True),server_default=func.now())
+
+
+
+
+
+
+# class Greetings(Base):
+#     __tablename__ = 'greetings'
+
+#     id = Column(Integer, primary_key=True, index=True)
+#     message = Column(String)

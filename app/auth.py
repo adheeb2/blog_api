@@ -14,18 +14,19 @@ pwd_context = CryptContext(schemes=['bcrypt'], deprecated = 'auto')
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
 
 def hash_password(password: str) -> str:
-    salt = bcrypt.gensalt()
-    hashed = bcrypt.hashpw(password.encode("utf-8"), salt)
-    return hashed.decode("utf-8")
+    # salt = bcrypt.gensalt()
+    # hashed = bcrypt.hashpw(password.encode("utf-8"), salt)
+    # return hashed.decode("utf-8")
+      return pwd_context.hash(password)
 
 def verify_password(plain_password : str, hashed_password: str) -> bool:
-    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password=('utf-8'))
+    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
-def create_access_token(data : dict) -> str:
-    to_encode = data.copy()
+def create_access_token(user : User) -> str:
+    to_encode = {"sub" : str(user.id)}
     expire = datetime.utcnow() + timedelta(minutes=env.ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp" : expire})
-    encoded_jwt = jwt.encode(to_encode, env.SECRET_KEY, algorithm= [env.JWT_ALGORITHM])
+    encoded_jwt = jwt.encode(to_encode, env.SECRET_KEY, algorithm= env.JWT_ALGORITHM)
     return encoded_jwt
 
 def get_current_user(token : str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> schemas.UserResponse:
@@ -44,7 +45,8 @@ def get_current_user(token : str = Depends(oauth2_scheme), db: Session = Depends
                 detail = "Could not validate credentials"
             )
         return user
-    except JWTError:
+    except JWTError as err:
+        print(err)
         raise HTTPException(
             status_code=401,
             detail='Token is invalid or expired'

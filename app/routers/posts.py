@@ -3,7 +3,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import Post, Tag, User
-from app.schemas import PostCreate, PostResponse, PostUpdate
+from app.schemas import PostCreate, PostResponse, PostUpdate, UserResponse
+from app import auth
 
 
 router = APIRouter(
@@ -26,7 +27,7 @@ def get_post(post_id : int, db: Session = Depends(get_db)):
     return post
 #Create a blog post
 @router.post("/", response_model=PostResponse)
-def create_post(post: PostCreate,db:Session = Depends(get_db)):
+def create_post(post: PostCreate,current_user: UserResponse = Depends(auth.get_current_user),db:Session = Depends(get_db)):
     user = db.query(User).first()
     if not user:
         raise HTTPException(status_code=400, detail="Author Not Found")
@@ -47,7 +48,7 @@ def create_post(post: PostCreate,db:Session = Depends(get_db)):
 
 #Update a blog post
 @router.put("/{post_id}", response_model=PostResponse)
-def update_post(post_id : int, updated_post: PostUpdate, db:Session = Depends(get_db)):
+def update_post(post_id : int, updated_post: PostUpdate,current_user: UserResponse = Depends(auth.get_current_user) ,db:Session = Depends(get_db)):
     post = db.query(Post).filter(Post.id == post_id).first()
     if not post:
         raise HTTPException(status_code=404, detail= "post not found") 
@@ -63,8 +64,9 @@ def update_post(post_id : int, updated_post: PostUpdate, db:Session = Depends(ge
 
 #Delete a blog post
 @router.delete("/{post_id}",)
-def delete_post(post_id : int, db:Session = Depends(get_db)):
+def delete_post(post_id : int,current_user: UserResponse = Depends(auth.get_current_user), db:Session = Depends(get_db)):
     post = db.query(Post).filter(Post.id == post_id).first()
+    
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
     db.delete(post)
@@ -72,3 +74,5 @@ def delete_post(post_id : int, db:Session = Depends(get_db)):
     return {
         "message": "successful"
     }
+
+  

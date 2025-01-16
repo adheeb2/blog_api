@@ -1,4 +1,3 @@
-from sqlalchemy import VARCHAR
 from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional
@@ -8,7 +7,7 @@ from typing import Optional
 class PostCreate(BaseModel):
     title: str
     content: str
-    status : str
+    status : Optional[str] = None
 
 class PostResponse(BaseModel):
     id : int
@@ -17,7 +16,7 @@ class PostResponse(BaseModel):
     views : int
     status : str
     created_at : datetime
-    updated_at : Optional[datetime] 
+    updated_at : Optional[datetime] = None
 
 class PostUpdate(PostCreate):
     status : str
@@ -36,9 +35,13 @@ class UserResponse(BaseModel):
     email : str
     role : str
     created_at : datetime
-    updated_at : Optional[datetime]
+    updated_at : Optional[datetime] = None
 
 class UserUpdate(BaseModel):
     username: str
     role : str
+
+class UserLogin(BaseModel):
+    email : str
+    password : str
 
