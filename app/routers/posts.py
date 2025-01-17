@@ -13,7 +13,7 @@ router = APIRouter(
 
 
 #Get all blog post
-@router.get("/",response_model=list[PostResponse])
+@router.get("",response_model=list[PostResponse])
 def get_all_posts(db: Session = Depends(get_db)):
     posts =db.query(Post).all()
     return posts
@@ -26,18 +26,14 @@ def get_post(post_id : int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Post not found")
     return post
 #Create a blog post
-@router.post("/", response_model=PostResponse)
+@router.post("", response_model=PostResponse)
 def create_post(post: PostCreate,current_user: UserResponse = Depends(auth.get_current_user),db:Session = Depends(get_db)):
-    user = db.query(User).first()
-    if not user:
-        raise HTTPException(status_code=400, detail="Author Not Found")
-    
     new_post = Post(
         title=post.title,
         content=post.content,
         # category=post.category,
         # status=post.status,
-        author_id=user.id,
+        author_id=current_user.id,
         # tags=tag_objects
     )
     db.add(new_post)
