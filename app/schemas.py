@@ -2,6 +2,8 @@ from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional
 
+from app.models import Role
+
 #Post
 
 class PostCreate(BaseModel):
@@ -22,12 +24,24 @@ class PostUpdate(PostCreate):
     status : str
     views : int
 
+class UserBase(BaseModel):
+    username : str
+    email : str
+
+class PostResponseWithAuthor(PostResponse):
+    author : UserBase
 #User
+
+
 
 class UserCreate(BaseModel):
     username : str
     email : str
     password : str
+    role : Optional[Role] = None
+
+    class Config:
+        use_enum_values = True
 
 class UserResponse(BaseModel):
     id : int

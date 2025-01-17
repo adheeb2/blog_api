@@ -24,9 +24,12 @@ def verify_password(plain_password : str, hashed_password: str) -> bool:
 
 def create_access_token(user : User) -> str:
     to_encode = {"sub" : str(user.id)}
-    expire = datetime.utcnow() + timedelta(minutes=env.ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.now() + timedelta(minutes=env.ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp" : expire})
     encoded_jwt = jwt.encode(to_encode, env.SECRET_KEY, algorithm= env.JWT_ALGORITHM)
+    print(to_encode,env.ACCESS_TOKEN_EXPIRE_MINUTES)
+    print(datetime.now())
+
     return encoded_jwt
 
 def get_current_user(token : str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> schemas.UserResponse:
